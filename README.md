@@ -1,3 +1,5 @@
+Here’s the updated setup guide with the added directory change commands:
+
 ---
 
 # **CodeBrew Project Setup Guide**
@@ -6,13 +8,19 @@ Welcome to the **CodeBrew** project! Follow the steps below to get the frontend 
 
 ## **Frontend Setup**
 
-1. Install the necessary dependencies:
+1. Navigate to the frontend directory:
+
+   ```bash
+   cd frontend
+   ```
+
+2. Install the necessary dependencies:
 
    ```bash
    npm install
    ```
 
-2. Start the development server:
+3. Start the development server:
 
    ```bash
    npm run dev
@@ -20,13 +28,19 @@ Welcome to the **CodeBrew** project! Follow the steps below to get the frontend 
 
 ## **Backend Setup**
 
-1. Install the backend dependencies:
+1. Navigate to the backend directory:
+
+   ```bash
+   cd backend
+   ```
+
+2. Install the backend dependencies:
 
    ```bash
    npm install
    ```
 
-2. Start the backend server with Nodemon for automatic restarts during development:
+3. Start the backend server with Nodemon for automatic restarts during development:
 
    ```bash
    npx nodemon index.js

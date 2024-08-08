@@ -1,12 +1,10 @@
 import React from "react";
-import Hero from "./components/Hero";
 import "./index.css";
-import Navbar from "./components/Navbar";
+import Route from "./routings/Routing";
 function App() {
   return (
     <div className=" montserrat text-white bg-black h-[100vh] w-full">
-      <Navbar />
-      <Hero />
+      <Route/>
     </div>
   );
 }

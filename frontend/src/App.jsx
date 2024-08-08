@@ -1,12 +1,14 @@
-import React from 'react'
-import LocomotiveScroll from 'locomotive-scroll';
+import React from "react";
+import Hero from "./components/Hero";
+import "./index.css";
+import Navbar from "./components/Navbar";
 function App() {
-  const locomotiveScroll = new LocomotiveScroll();
   return (
-    <div className='text-white bg-black h-screen w-full' >
-    <div className="no-scrollbar overflow-y-auto">Hello CodeBrew</div>
+    <div className=" montserrat text-white bg-black h-[100vh] w-full">
+      <Navbar />
+      <Hero />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

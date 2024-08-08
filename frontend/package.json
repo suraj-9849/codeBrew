@@ -15,7 +15,8 @@
     "gsap": "^3.12.5",
     "locomotive-scroll": "^5.0.0-beta.13",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-icons": "^5.2.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
@@ -27,6 +28,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "postcss": "^8.4.41",
+    "react-router-dom": "^6.26.0",
     "tailwindcss": "^3.4.8",
     "vite": "^5.2.0"
   }

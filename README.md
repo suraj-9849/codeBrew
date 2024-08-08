@@ -20,15 +20,13 @@ Welcome to the **CodeBrew** project! Follow the steps below to get the frontend 
 
 ## **Backend Setup**
 
-1. Fill in any required environment variables in the `.env` file.
-
-2. Install the backend dependencies:
+1. Install the backend dependencies:
 
    ```bash
    npm install
    ```
 
-3. Start the backend server with Nodemon for automatic restarts during development:
+2. Start the backend server with Nodemon for automatic restarts during development:
 
    ```bash
    npx nodemon index.js

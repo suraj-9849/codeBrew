@@ -6,6 +6,9 @@ Welcome to the **CodeBrew** project! Follow the steps below to get the frontend 
 
 ## **Frontend Setup**
 
+   ```bash
+   cd frontend
+   ```
 1. Install the necessary dependencies:
 
    ```bash
@@ -19,7 +22,9 @@ Welcome to the **CodeBrew** project! Follow the steps below to get the frontend 
    ```
 
 ## **Backend Setup**
-
+   ```bash
+   cd backend
+   ```
 1. Install the backend dependencies:
 
    ```bash

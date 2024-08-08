@@ -4,8 +4,7 @@ import Hero from "./Hero";
 
 function Home() {
   return (
-    <div>
-      <Navbar />
+    <div className="h-screen w-full" >
       <Hero />
     </div>
   );

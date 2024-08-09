@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { IoIosReturnRight } from "react-icons/io";
+import {z} from "zod"
 
 function Formportfolio() {
   const firstNameRef = useRef();
@@ -20,28 +21,50 @@ function Formportfolio() {
       email: emailRef.current.value,
       githubLink: githubLinkRef.current.value,
       linkedinLink: linkedinLinkRef.current.value,
-      technicalSkills: technicalSkillsRef.current.value,
+      technicalSkills: technicalSkillsRef.current.value.split(','), 
       aboutMe: aboutMeRef.current.value,
       projects: projectsRef.current.value,
       education: educationRef.current.value,
-      workExperience: workExperienceRef.current.value,
+      workExperience: workExperienceRef.current.value.split(','), 
     };
-
+  
+    const dataSchema = z.object({
+      firstName: z.string(),
+      lastName: z.string(),
+      email: z.string().email({ message: "Invalid email address" }),
+      githubLink: z.string().url({ message: "Invalid URL" }),
+      linkedinLink: z.string().url({ message: "Invalid URL" }),
+      technicalSkills: z.array(z.string()),
+      workExperience: z.array(z.string()),
+      aboutMe: z.string(),
+      projects: z.string(),
+      education: z.string(),
+    });
+  
+    const parsedData = dataSchema.safeParse(formData);
+  
+    if (!parsedData.success) {
+      console.error(parsedData.error.errors);
+      alert("Validation failed. Please check your inputs.");
+      return;
+    }
+  
     fetch("http://localhost:3000/userData", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(parsedData.data),
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data)
+        console.log(data);
       })
       .catch((err) => {
         console.error(err);
       });
   };
+  
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center ">

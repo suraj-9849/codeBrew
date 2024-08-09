@@ -1,6 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { IoIosReturnRight } from "react-icons/io";
-import {z} from "zod"
+import { z } from "zod";
+import MultipleInput from "./MultipleInput";
 
 function Formportfolio() {
   const firstNameRef = useRef();
@@ -10,24 +11,38 @@ function Formportfolio() {
   const linkedinLinkRef = useRef();
   const technicalSkillsRef = useRef();
   const aboutMeRef = useRef();
-  const projectsRef = useRef();
   const educationRef = useRef();
   const workExperienceRef = useRef();
 
+  const [projectInputs, setProjectInputs] = useState([<MultipleInput key={0} />]);
+
+  function addAnotherMultipleInput() {
+    setProjectInputs([...projectInputs, <MultipleInput key={projectInputs.length} />]);
+  }
+
   const handleSubmit = () => {
+    const projects = projectInputs.map((_, index) => {
+      const titleRef = document.getElementById(`projectTitle-${index}`);
+      const githubLinkRef = document.getElementById(`projectGithub-${index}`);
+      return {
+        title: titleRef.value,
+        githubLink: githubLinkRef.value,
+      };
+    });
+
     const formData = {
       firstName: firstNameRef.current.value,
       lastName: lastNameRef.current.value,
       email: emailRef.current.value,
       githubLink: githubLinkRef.current.value,
       linkedinLink: linkedinLinkRef.current.value,
-      technicalSkills: technicalSkillsRef.current.value.split(','), 
+      technicalSkills: technicalSkillsRef.current.value.split(","),
       aboutMe: aboutMeRef.current.value,
-      projects: projectsRef.current.value,
+      projects: projects,
       education: educationRef.current.value,
-      workExperience: workExperienceRef.current.value.split(','), 
+      workExperience: workExperienceRef.current.value.split(","),
     };
-  
+
     const dataSchema = z.object({
       firstName: z.string(),
       lastName: z.string(),
@@ -37,18 +52,23 @@ function Formportfolio() {
       technicalSkills: z.array(z.string()),
       workExperience: z.array(z.string()),
       aboutMe: z.string(),
-      projects: z.string(),
+      projects: z.array(
+        z.object({
+          title: z.string(),
+          githubLink: z.string().url({ message: "Invalid URL" }),
+        })
+      ),
       education: z.string(),
     });
-  
+
     const parsedData = dataSchema.safeParse(formData);
-  
+
     if (!parsedData.success) {
       console.error(parsedData.error.errors);
       alert("Validation failed. Please check your inputs.");
       return;
     }
-  
+
     fetch("http://localhost:3000/userData", {
       method: "POST",
       headers: {
@@ -64,7 +84,6 @@ function Formportfolio() {
         console.error(err);
       });
   };
-  
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center ">
@@ -169,13 +188,31 @@ function Formportfolio() {
           <label htmlFor="projects" className="mb-1">
             Projects
           </label>
-          <input
-            ref={projectsRef}
-            id="projects"
-            type="text"
-            placeholder="Describe your projects"
-            className="p-2 border rounded text-black "
-          />
+          <div className="flex flex-col  items-center justify-center gap-10" >
+            {projectInputs.map((e, index) => (
+              <div key={index} className="flex gap-5">
+                <input
+                  id={`projectTitle-${index}`}
+                  type="text"
+                  placeholder="Project Title"
+                  className="px-7 py-2 border rounded text-black"
+                />
+                <input
+                  id={`projectGithub-${index}`}
+                  type="text"
+                  placeholder="Github Link"
+                  className="px-7 py-2 border rounded text-black"
+                />
+              </div>
+            ))}
+            <button
+              type="button"
+              className="bg-green-400 text-black px-3 rounded-md w-fit mt-2"
+              onClick={addAnotherMultipleInput}
+            >
+              +
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-col">

@@ -20,10 +20,21 @@ function Formportfolio() {
     <MultipleInput key={0} />,
   ]);
 
+  const [educationInputs, setEducationInputs] = useState([
+    <MultipleInput key={0} />,
+  ]);
+
   function addAnotherMultipleInput() {
     setProjectInputs([
       ...projectInputs,
       <MultipleInput key={projectInputs.length} />,
+    ]);
+  }
+
+  function addEducationDetails() {
+    setEducationInputs([
+      ...educationInputs,
+      <MultipleInput key={educationInputs.length} />,
     ]);
   }
 
@@ -140,10 +151,11 @@ function Formportfolio() {
               placeholder="Enter your last name"
               className="px-7 py-2 border rounded text-black"
             />
-          </div>
-          {errors.lastName && (
+             {errors.lastName && (
             <span className="text-red-500 text-sm">{errors.lastName}</span>
           )}
+          </div>
+         
         </div>
 
         <div className="flex flex-col">
@@ -209,11 +221,6 @@ function Formportfolio() {
             placeholder="List your technical skills"
             className="p-2 border rounded text-black "
           />
-          {errors.technicalSkills && (
-            <span className="text-red-500 text-sm">
-              {errors.technicalSkills}
-            </span>
-          )}
         </div>
 
         <div className="flex flex-col">
@@ -262,18 +269,35 @@ function Formportfolio() {
             </button>
           </div>
         </div>
-
         <div className="flex flex-col">
-          <label htmlFor="education" className="mb-1">
+          <label htmlFor="projects" className="mb-1">
             Education
           </label>
-          <input
-            ref={educationRef}
-            id="education"
-            type="text"
-            placeholder="Enter your education details"
-            className="p-2 border rounded text-black "
-          />
+          <div className="flex flex-col  items-center justify-center gap-10">
+            {educationInputs.map((e, index) => (
+              <div key={index} className="flex gap-5">
+                <input
+                  id={`educationAcademy-${index}`}
+                  type="text"
+                  placeholder="Education"
+                  className="px-7 py-2 border rounded text-black"
+                />
+                <input
+                  id={`year-${index}`}
+                  type="date"
+                  placeholder="Studied till"
+                  className="px-7 py-2 border rounded text-black"
+                />
+              </div>
+            ))}
+            <button
+              type="button"
+              className="bg-green-400 text-black px-3 rounded-md w-fit mt-2"
+             onClick={addEducationDetails}
+            >
+              +
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-col">

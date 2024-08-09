@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 import { IoIosReturnRight } from "react-icons/io";
 import { z } from "zod";
 import MultipleInput from "./MultipleInput";
-
 function Formportfolio() {
   const firstNameRef = useRef();
   const lastNameRef = useRef();
@@ -11,47 +10,42 @@ function Formportfolio() {
   const linkedinLinkRef = useRef();
   const technicalSkillsRef = useRef();
   const aboutMeRef = useRef();
-  const educationRef = useRef();
   const workExperienceRef = useRef();
 
   const [errors, setErrors] = useState({});
-  const [projectInputs, setProjectInputs] = useState([
-    <MultipleInput key={0} />,
-  ]);
-  const [educationInputs, setEducationInputs] = useState([
-    <MultipleInput key={0} />,
-  ]);
+  const [projectInputs, setProjectInputs] = useState([{ id: 0 }]);
+  const [educationInputs, setEducationInputs] = useState([{ id: 0 }]);
 
   function addAnotherMultipleInput() {
-    setProjectInputs([
-      ...projectInputs,
-      <MultipleInput key={projectInputs.length} />,
-    ]);
+    setProjectInputs([...projectInputs, { id: projectInputs.length }]);
   }
 
   function addEducationDetails() {
-    setEducationInputs([
-      ...educationInputs,
-      <MultipleInput key={educationInputs.length} />,
-    ]);
+    setEducationInputs([...educationInputs, { id: educationInputs.length }]);
   }
 
   const handleSubmit = () => {
-    const projects = projectInputs.map((_, index) => {
+    const projects = projectInputs.map((input, index) => {
       const titleRef = document.getElementById(`projectTitle-${index}`);
       const githubLinkRef = document.getElementById(`projectGithub-${index}`);
+      const deployedLinkRef = document.getElementById(`deployedLink-${index}`);
       return {
         title: titleRef.value,
         githubLink: githubLinkRef.value,
+        deployedLink: deployedLinkRef.value,
       };
     });
 
-    const education = educationInputs.map((_, index) => {
+    const education = educationInputs.map((input, index) => {
       const academyRef = document.getElementById(`educationAcademy-${index}`);
       const yearRef = document.getElementById(`year-${index}`);
+      const institutionRef = document.getElementById(
+        `educational_institution-${index}`
+      );
       return {
         academy: academyRef.value,
         year: yearRef.value,
+        educational_institution: institutionRef.value,
       };
     });
 
@@ -78,26 +72,24 @@ function Formportfolio() {
         message: "Technical skills should be an array of strings.",
       }),
       workExperience: z.array(z.string()),
-      aboutMe: z
-        .string()
-        .nonempty({ message: "About me section is required." }),
+      aboutMe: z.string().nonempty({ message: "About me section is required." }),
       projects: z
         .array(
           z.object({
-            title: z
-              .string()
-              .nonempty({ message: "Project title is required." }),
-            githubLink: z
-              .string()
-              .url({ message: "Invalid project GitHub link." }),
+            title: z.string().nonempty({ message: "Project title is required." }),
+            githubLink: z.string().url({ message: "Invalid project GitHub link." }),
+            deployedLink: z.string().url().optional(),
           })
         )
         .nonempty({ message: "At least one project is required." }),
       education: z
         .array(
           z.object({
-            academy: z.string().nonempty({ message: "Education is required." }),
+            academy: z.string().nonempty({ message: "Academy is required." }),
             year: z.string().nonempty({ message: "Year is required." }),
+            educational_institution: z
+              .string()
+              .nonempty({ message: "Educational institution is required." }),
           })
         )
         .nonempty({ message: "At least one education record is required." }),
@@ -266,8 +258,8 @@ function Formportfolio() {
           <label htmlFor="projects" className="mb-1">
             Projects
           </label>
-          <div className="flex flex-col  items-center justify-center gap-10">
-            {projectInputs.map((_, index) => (
+          <div className="flex flex-col items-center justify-center gap-10">
+            {projectInputs.map((input, index) => (
               <div key={index} className="flex gap-5">
                 <input
                   id={`projectTitle-${index}`}
@@ -278,7 +270,13 @@ function Formportfolio() {
                 <input
                   id={`projectGithub-${index}`}
                   type="text"
-                  placeholder="Github Link"
+                  placeholder="GitHub Link"
+                  className="px-7 py-2 border rounded text-black"
+                />
+                <input
+                  id={`deployedLink-${index}`}
+                  type="text"
+                  placeholder="Deployed Link"
                   className="px-7 py-2 border rounded text-black"
                 />
               </div>
@@ -296,23 +294,30 @@ function Formportfolio() {
           )}
         </div>
 
-        <div className="flex flex-col">
+
+         <div className="flex flex-col">
           <label htmlFor="education" className="mb-1">
             Education
           </label>
-          <div className="flex flex-col  items-center justify-center gap-10">
-            {educationInputs.map((_, index) => (
+          <div className="flex flex-col items-center justify-center gap-10">
+            {educationInputs.map((input, index) => (
               <div key={index} className="flex gap-5">
                 <input
                   id={`educationAcademy-${index}`}
                   type="text"
-                  placeholder="Education"
+                  placeholder="Course"
                   className="px-7 py-2 border rounded text-black"
                 />
                 <input
                   id={`year-${index}`}
                   type="date"
-                  placeholder="Studied till"
+                  placeholder="Year"
+                  className="px-7 py-2 border rounded text-black"
+                />
+                <input
+                  id={`educational_institution-${index}`}
+                  type="text"
+                  placeholder="Educational Institute"
                   className="px-7 py-2 border rounded text-black"
                 />
               </div>

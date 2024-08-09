@@ -3,40 +3,31 @@ const cors = require("cors");
 const app = express();
 const port = 3000;
 
-app.use(cors());
+app.use(cors()); // Connecting the f-end and b-end
 app.use(express.json());
-
-let userData = {};
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/userData", (req, res) => {
-  if (Object.keys(userData).length) {
-    res.status(200).json({
-      msg: userData,
-    });
-  } else {
-    res.status(404).json({
-      msg: "No user data found",
-    });
-  }
+app.post("/userData", (req, res) => {
+  const formData = req.body;
+  console.log(formData);
+  res.status(200).json({
+    msg: "User data received successfully",
+    data: formData,
+  });
 });
 
-app.post("/userData", (req, res) => {
-  userData = req.body;
+app.get('*', (req, res) => {
+  res.status(404).send("404 Not Found!");
+});
 
-  if (userData) {
-    res.status(200).json({
-      msg: "User data received successfully",
-      data: userData,
-    });
-  } else {
-    res.status(400).json({
-      msg: "Error Occurred in receiving the user data",
-    });
-  }
+app.use(function (err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).json({
+    msg: "Internal Server Error",
+  });
 });
 
 app.listen(port, () => {

@@ -14,10 +14,17 @@ function Formportfolio() {
   const educationRef = useRef();
   const workExperienceRef = useRef();
 
-  const [projectInputs, setProjectInputs] = useState([<MultipleInput key={0} />]);
+  const [errors, setErrors] = useState({});
+
+  const [projectInputs, setProjectInputs] = useState([
+    <MultipleInput key={0} />,
+  ]);
 
   function addAnotherMultipleInput() {
-    setProjectInputs([...projectInputs, <MultipleInput key={projectInputs.length} />]);
+    setProjectInputs([
+      ...projectInputs,
+      <MultipleInput key={projectInputs.length} />,
+    ]);
   }
 
   const handleSubmit = () => {
@@ -44,30 +51,46 @@ function Formportfolio() {
     };
 
     const dataSchema = z.object({
-      firstName: z.string(),
-      lastName: z.string(),
-      email: z.string().email({ message: "Invalid email address" }),
-      githubLink: z.string().url({ message: "Invalid URL" }),
-      linkedinLink: z.string().url({ message: "Invalid URL" }),
-      technicalSkills: z.array(z.string()),
+      firstName: z.string().nonempty({ message: "First name is required." }),
+      lastName: z.string().nonempty({ message: "Last name is required." }),
+      email: z.string().email({ message: "Invalid email address." }),
+      githubLink: z.string().url({ message: "Invalid GitHub link." }),
+      linkedinLink: z.string().url({ message: "Invalid LinkedIn link." }),
+      technicalSkills: z.array(z.string()).nonempty({
+        message: "Technical skills should be an array of strings.",
+      }),
       workExperience: z.array(z.string()),
-      aboutMe: z.string(),
-      projects: z.array(
-        z.object({
-          title: z.string(),
-          githubLink: z.string().url({ message: "Invalid URL" }),
-        })
-      ),
-      education: z.string(),
+      aboutMe: z
+        .string()
+        .nonempty({ message: "About me section is required." }),
+      projects: z
+        .array(
+          z.object({
+            title: z
+              .string()
+              .nonempty({ message: "Project title is required." }),
+            githubLink: z
+              .string()
+              .url({ message: "Invalid project GitHub link." }),
+          })
+        )
+        .nonempty({ message: "At least one project is required." }),
+      education: z.string().nonempty({ message: "Education is required." }),
     });
 
     const parsedData = dataSchema.safeParse(formData);
-
     if (!parsedData.success) {
-      console.error(parsedData.error.errors);
-      alert("Validation failed. Please check your inputs.");
+      const errorMessages = {};
+
+      parsedData.error.errors.forEach((error) => {
+        errorMessages[error.path[0]] = error.message;
+      });
+
+      setErrors(errorMessages);
       return;
     }
+
+    setErrors({});
 
     fetch("http://localhost:3000/userData", {
       method: "POST",
@@ -101,6 +124,9 @@ function Formportfolio() {
               placeholder="Enter your first name"
               className="px-7 py-2 border rounded text-black "
             />
+            {errors.firstName && (
+              <span className="text-red-500 text-sm">{errors.firstName}</span>
+            )}
           </div>
 
           <div className="flex flex-col">
@@ -115,6 +141,9 @@ function Formportfolio() {
               className="px-7 py-2 border rounded text-black"
             />
           </div>
+          {errors.lastName && (
+            <span className="text-red-500 text-sm">{errors.lastName}</span>
+          )}
         </div>
 
         <div className="flex flex-col">
@@ -128,6 +157,9 @@ function Formportfolio() {
             placeholder="Enter your email"
             className="p-2 border rounded text-black "
           />
+          {errors.email && (
+            <span className="text-red-500 text-sm">{errors.email}</span>
+          )}
         </div>
 
         <div className="flex justify-between items-center ">
@@ -142,6 +174,9 @@ function Formportfolio() {
               placeholder="GitHub profile link"
               className="px-7 py-2 border rounded text-black  "
             />
+            {errors.githubLink && (
+              <span className="text-red-500 text-sm">{errors.githubLink}</span>
+            )}
           </div>
 
           <div className="flex flex-col">
@@ -155,6 +190,11 @@ function Formportfolio() {
               placeholder="LinkedIn profile link"
               className="px-7 py-2 border rounded text-black "
             />
+            {errors.linkedinLink && (
+              <span className="text-red-500 text-sm">
+                {errors.linkedinLink}
+              </span>
+            )}
           </div>
         </div>
 
@@ -169,6 +209,11 @@ function Formportfolio() {
             placeholder="List your technical skills"
             className="p-2 border rounded text-black "
           />
+          {errors.technicalSkills && (
+            <span className="text-red-500 text-sm">
+              {errors.technicalSkills}
+            </span>
+          )}
         </div>
 
         <div className="flex flex-col">
@@ -182,13 +227,16 @@ function Formportfolio() {
             placeholder="Write a short bio about yourself"
             className="p-2 border rounded text-black "
           />
+          {errors.aboutMe && (
+            <span className="text-red-500 text-sm">{errors.aboutMe}</span>
+          )}
         </div>
 
         <div className="flex flex-col">
           <label htmlFor="projects" className="mb-1">
             Projects
           </label>
-          <div className="flex flex-col  items-center justify-center gap-10" >
+          <div className="flex flex-col  items-center justify-center gap-10">
             {projectInputs.map((e, index) => (
               <div key={index} className="flex gap-5">
                 <input
@@ -239,6 +287,11 @@ function Formportfolio() {
             placeholder="List your work experience"
             className="p-2 border rounded text-black "
           />
+          {errors.workExperience && (
+            <span className="text-red-500 text-sm">
+              {errors.workExperience}
+            </span>
+          )}
         </div>
       </form>
       <div

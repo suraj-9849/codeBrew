@@ -15,11 +15,9 @@ function Formportfolio() {
   const workExperienceRef = useRef();
 
   const [errors, setErrors] = useState({});
-
   const [projectInputs, setProjectInputs] = useState([
     <MultipleInput key={0} />,
   ]);
-
   const [educationInputs, setEducationInputs] = useState([
     <MultipleInput key={0} />,
   ]);
@@ -48,6 +46,15 @@ function Formportfolio() {
       };
     });
 
+    const education = educationInputs.map((_, index) => {
+      const academyRef = document.getElementById(`educationAcademy-${index}`);
+      const yearRef = document.getElementById(`year-${index}`);
+      return {
+        academy: academyRef.value,
+        year: yearRef.value,
+      };
+    });
+
     const formData = {
       firstName: firstNameRef.current.value,
       lastName: lastNameRef.current.value,
@@ -57,7 +64,7 @@ function Formportfolio() {
       technicalSkills: technicalSkillsRef.current.value.split(","),
       aboutMe: aboutMeRef.current.value,
       projects: projects,
-      education: educationRef.current.value,
+      education: education,
       workExperience: workExperienceRef.current.value.split(","),
     };
 
@@ -86,7 +93,14 @@ function Formportfolio() {
           })
         )
         .nonempty({ message: "At least one project is required." }),
-      education: z.string().nonempty({ message: "Education is required." }),
+      education: z
+        .array(
+          z.object({
+            academy: z.string().nonempty({ message: "Education is required." }),
+            year: z.string().nonempty({ message: "Year is required." }),
+          })
+        )
+        .nonempty({ message: "At least one education record is required." }),
     });
 
     const parsedData = dataSchema.safeParse(formData);
@@ -94,7 +108,8 @@ function Formportfolio() {
       const errorMessages = {};
 
       parsedData.error.errors.forEach((error) => {
-        errorMessages[error.path[0]] = error.message;
+        const pathKey = error.path.join(".");
+        errorMessages[pathKey] = error.message;
       });
 
       setErrors(errorMessages);
@@ -135,8 +150,10 @@ function Formportfolio() {
               placeholder="Enter your first name"
               className="px-7 py-2 border rounded text-black "
             />
-            {errors.firstName && (
-              <span className="text-red-500 text-sm">{errors.firstName}</span>
+            {errors["firstName"] && (
+              <span className="text-red-500 text-sm">
+                {errors["firstName"]}
+              </span>
             )}
           </div>
 
@@ -151,11 +168,10 @@ function Formportfolio() {
               placeholder="Enter your last name"
               className="px-7 py-2 border rounded text-black"
             />
-             {errors.lastName && (
-            <span className="text-red-500 text-sm">{errors.lastName}</span>
-          )}
+            {errors["lastName"] && (
+              <span className="text-red-500 text-sm">{errors["lastName"]}</span>
+            )}
           </div>
-         
         </div>
 
         <div className="flex flex-col">
@@ -169,8 +185,8 @@ function Formportfolio() {
             placeholder="Enter your email"
             className="p-2 border rounded text-black "
           />
-          {errors.email && (
-            <span className="text-red-500 text-sm">{errors.email}</span>
+          {errors["email"] && (
+            <span className="text-red-500 text-sm">{errors["email"]}</span>
           )}
         </div>
 
@@ -186,8 +202,10 @@ function Formportfolio() {
               placeholder="GitHub profile link"
               className="px-7 py-2 border rounded text-black  "
             />
-            {errors.githubLink && (
-              <span className="text-red-500 text-sm">{errors.githubLink}</span>
+            {errors["githubLink"] && (
+              <span className="text-red-500 text-sm">
+                {errors["githubLink"]}
+              </span>
             )}
           </div>
 
@@ -202,9 +220,9 @@ function Formportfolio() {
               placeholder="LinkedIn profile link"
               className="px-7 py-2 border rounded text-black "
             />
-            {errors.linkedinLink && (
+            {errors["linkedinLink"] && (
               <span className="text-red-500 text-sm">
-                {errors.linkedinLink}
+                {errors["linkedinLink"]}
               </span>
             )}
           </div>
@@ -221,6 +239,11 @@ function Formportfolio() {
             placeholder="List your technical skills"
             className="p-2 border rounded text-black "
           />
+          {errors["technicalSkills"] && (
+            <span className="text-red-500 text-sm">
+              {errors["technicalSkills"]}
+            </span>
+          )}
         </div>
 
         <div className="flex flex-col">
@@ -234,8 +257,8 @@ function Formportfolio() {
             placeholder="Write a short bio about yourself"
             className="p-2 border rounded text-black "
           />
-          {errors.aboutMe && (
-            <span className="text-red-500 text-sm">{errors.aboutMe}</span>
+          {errors["aboutMe"] && (
+            <span className="text-red-500 text-sm">{errors["aboutMe"]}</span>
           )}
         </div>
 
@@ -244,7 +267,7 @@ function Formportfolio() {
             Projects
           </label>
           <div className="flex flex-col  items-center justify-center gap-10">
-            {projectInputs.map((e, index) => (
+            {projectInputs.map((_, index) => (
               <div key={index} className="flex gap-5">
                 <input
                   id={`projectTitle-${index}`}
@@ -268,13 +291,17 @@ function Formportfolio() {
               +
             </button>
           </div>
+          {errors["projects"] && (
+            <span className="text-red-500 text-sm">{errors["projects"]}</span>
+          )}
         </div>
+
         <div className="flex flex-col">
-          <label htmlFor="projects" className="mb-1">
+          <label htmlFor="education" className="mb-1">
             Education
           </label>
           <div className="flex flex-col  items-center justify-center gap-10">
-            {educationInputs.map((e, index) => (
+            {educationInputs.map((_, index) => (
               <div key={index} className="flex gap-5">
                 <input
                   id={`educationAcademy-${index}`}
@@ -293,11 +320,14 @@ function Formportfolio() {
             <button
               type="button"
               className="bg-green-400 text-black px-3 rounded-md w-fit mt-2"
-             onClick={addEducationDetails}
+              onClick={addEducationDetails}
             >
               +
             </button>
           </div>
+          {errors["education"] && (
+            <span className="text-red-500 text-sm">{errors["education"]}</span>
+          )}
         </div>
 
         <div className="flex flex-col">
@@ -311,9 +341,9 @@ function Formportfolio() {
             placeholder="List your work experience"
             className="p-2 border rounded text-black "
           />
-          {errors.workExperience && (
+          {errors["workExperience"] && (
             <span className="text-red-500 text-sm">
-              {errors.workExperience}
+              {errors["workExperience"]}
             </span>
           )}
         </div>

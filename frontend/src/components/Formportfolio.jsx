@@ -49,6 +49,8 @@ function Formportfolio() {
       };
     });
 
+    const colorSchema = z.string();
+
     const formData = {
       firstName: firstNameRef.current.value,
       lastName: lastNameRef.current.value,
@@ -60,6 +62,12 @@ function Formportfolio() {
       projects: projects,
       education: education,
       workExperience: workExperienceRef.current.value.split(","),
+      colors: {
+        primary: document.getElementById("primary").value,
+        secondary: document.getElementById("secondary").value,
+        accent: document.getElementById("accent").value,
+        text: document.getElementById("text").value,
+      },
     };
 
     const dataSchema = z.object({
@@ -72,12 +80,18 @@ function Formportfolio() {
         message: "Technical skills should be an array of strings.",
       }),
       workExperience: z.array(z.string()),
-      aboutMe: z.string().nonempty({ message: "About me section is required." }),
+      aboutMe: z
+        .string()
+        .nonempty({ message: "About me section is required." }),
       projects: z
         .array(
           z.object({
-            title: z.string().nonempty({ message: "Project title is required." }),
-            githubLink: z.string().url({ message: "Invalid project GitHub link." }),
+            title: z
+              .string()
+              .nonempty({ message: "Project title is required." }),
+            githubLink: z
+              .string()
+              .url({ message: "Invalid project GitHub link." }),
             deployedLink: z.string().url().optional(),
           })
         )
@@ -93,6 +107,12 @@ function Formportfolio() {
           })
         )
         .nonempty({ message: "At least one education record is required." }),
+      colors: z.object({
+        primary: colorSchema,
+        secondary: colorSchema,
+        accent: colorSchema,
+        text: colorSchema,
+      }),
     });
 
     const parsedData = dataSchema.safeParse(formData);
@@ -294,8 +314,7 @@ function Formportfolio() {
           )}
         </div>
 
-
-         <div className="flex flex-col">
+        <div className="flex flex-col">
           <label htmlFor="education" className="mb-1">
             Education
           </label>
@@ -346,6 +365,24 @@ function Formportfolio() {
             placeholder="List your work experience"
             className="p-2 border rounded text-black "
           />
+          {errors["workExperience"] && (
+            <span className="text-red-500 text-sm">
+              {errors["workExperience"]}
+            </span>
+          )}
+        </div>
+
+        <div className="flex flex-col">
+          <label htmlFor="workExperience" className="mb-1">
+            Colors
+          </label>
+        <div className="flex justify-between items-center" >
+        <input type="color" name="color" id="primary" />
+          <input type="color" name="" id="secondary" />
+          <input type="color" name="" id="accent" />
+          <input type="color" name="" id="text" />
+        </div>
+
           {errors["workExperience"] && (
             <span className="text-red-500 text-sm">
               {errors["workExperience"]}

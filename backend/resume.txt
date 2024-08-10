@@ -1,0 +1,54 @@
+Here is a well-structured professional resume document based on the provided information:
+
+**Gunupuru Suraj**
+
+**Contact Information:**
+
+* Email: [surajlohit42@gmail.com](mailto:surajlohit42@gmail.com)
+* GitHub: https://github.com/suraj-9849
+* LinkedIn: https://www.linkedin.com/in/gunupuru-suraj-834965281/
+
+**Professional Summary:**
+Highly motivated and passionate Full-Stack Web Developer with a strong foundation in programming languages and web development technologies. Proficient in designing and developing scalable, efficient, and responsive web applications. Eager to leverage my skills and experience to drive innovative solutions and contribute to a dynamic team.
+
+**Technical Skills:**
+
+**Programming Languages:**
+
+* C
+* C++
+* WEBD
+
+**Tools and Technologies:**
+
+* (Additional skills can be added as needed)
+
+**Work Experience:**
+
+(Note: Since there is no work experience provided, this section can be modified or removed. Please add relevant work experience if applicable.)
+
+**Projects:**
+
+**MARVEL**
+
+* Description: A web application developed to demonstrate my skills in full-stack web development.
+* Live Demo: [View Live](https://github.com/suraj-9849/MARVEL)
+* Source Code: [GitHub Repo](https://github.com/suraj-9849/MARVEL)
+
+**FOOD_FORWARD**
+
+* Description: A web-based platform designed to connect food donors with those in need, reducing food waste and promoting sustainability.
+* Live Demo: [View Live](https://github.com/Sathya-reddy1658/FoodForward)
+* Source Code: [GitHub Repo](https://github.com/Sathya-reddy1658/FoodForward)
+
+**FoodForward**
+
+* Description: (Duplicate entry removed)
+
+**Education:**
+
+* **undefined**, asda (Expected Graduation: August 14, 2024)
+
+(Note: Please provide more information about your educational qualifications, such as the degree and institution, to make this section more informative.)
+
+I hope this resume meets your expectations! Remember to customize and update your resume as you continue to grow in your career. Good luck with your job applications!

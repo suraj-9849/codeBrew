@@ -20,7 +20,7 @@ function Navbar() {
             Portfolio
           </Link>
           <Link
-            to="/"
+            to="/createResume"
             className="ml-20 hover:scale-105 hover:duration-150 text-sm flex items-center opacity-80 justify-center gap-2"
           >
             Resume

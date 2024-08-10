@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react";
 import { IoIosReturnRight } from "react-icons/io";
-import { z } from "zod";
-import MultipleInput from "./MultipleInput";
+import { PortFolioSchema } from '../types/zodPortfolio'; 
+import { Fetch } from "../types/Fetch";
+
 function Formportfolio() {
   const firstNameRef = useRef();
   const lastNameRef = useRef();
@@ -24,7 +25,9 @@ function Formportfolio() {
     setEducationInputs([...educationInputs, { id: educationInputs.length }]);
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault(); 
+
     const projects = projectInputs.map((input, index) => {
       const titleRef = document.getElementById(`projectTitle-${index}`);
       const githubLinkRef = document.getElementById(`projectGithub-${index}`);
@@ -39,17 +42,13 @@ function Formportfolio() {
     const education = educationInputs.map((input, index) => {
       const academyRef = document.getElementById(`educationAcademy-${index}`);
       const yearRef = document.getElementById(`year-${index}`);
-      const institutionRef = document.getElementById(
-        `educational_institution-${index}`
-      );
+      const institutionRef = document.getElementById(`educational_institution-${index}`);
       return {
         academy: academyRef.value,
         year: yearRef.value,
         educational_institution: institutionRef.value,
       };
     });
-
-    const colorSchema = z.string();
 
     const formData = {
       firstName: firstNameRef.current.value,
@@ -70,52 +69,7 @@ function Formportfolio() {
       },
     };
 
-    const dataSchema = z.object({
-      firstName: z.string().nonempty({ message: "First name is required." }),
-      lastName: z.string().nonempty({ message: "Last name is required." }),
-      email: z.string().email({ message: "Invalid email address." }),
-      githubLink: z.string().url({ message: "Invalid GitHub link." }),
-      linkedinLink: z.string().url({ message: "Invalid LinkedIn link." }),
-      technicalSkills: z.array(z.string()).nonempty({
-        message: "Technical skills should be an array of strings.",
-      }),
-      workExperience: z.array(z.string()),
-      aboutMe: z
-        .string()
-        .nonempty({ message: "About me section is required." }),
-      projects: z
-        .array(
-          z.object({
-            title: z
-              .string()
-              .nonempty({ message: "Project title is required." }),
-            githubLink: z
-              .string()
-              .url({ message: "Invalid project GitHub link." }),
-            deployedLink: z.string().url().optional(),
-          })
-        )
-        .nonempty({ message: "At least one project is required." }),
-      education: z
-        .array(
-          z.object({
-            academy: z.string().nonempty({ message: "Academy is required." }),
-            year: z.string().nonempty({ message: "Year is required." }),
-            educational_institution: z
-              .string()
-              .nonempty({ message: "Educational institution is required." }),
-          })
-        )
-        .nonempty({ message: "At least one education record is required." }),
-      colors: z.object({
-        primary: colorSchema,
-        secondary: colorSchema,
-        accent: colorSchema,
-        text: colorSchema,
-      }),
-    });
-
-    const parsedData = dataSchema.safeParse(formData);
+    const parsedData = PortFolioSchema.safeParse(formData);
     if (!parsedData.success) {
       const errorMessages = {};
 
@@ -130,20 +84,10 @@ function Formportfolio() {
 
     setErrors({});
 
-    fetch("http://localhost:3000/userData", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(parsedData.data),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    const url = "userData";
+    const data = { key: parsedData.data };
+    await Fetch(url, data); 
+
   };
 
   return (

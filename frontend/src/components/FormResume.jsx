@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { IoIosReturnRight } from "react-icons/io";
-import { z } from "zod";
+import { ResumeDataSchema } from "../types/zodResume";
+import { Fetch } from "../types/Fetch";
 function FormResume() {
   const firstNameRef = useRef();
   const lastNameRef = useRef();
@@ -61,46 +62,7 @@ function FormResume() {
       workExperience: workExperienceRef.current.value.split(","),
     };
 
-    const dataSchema = z.object({
-      firstName: z.string().nonempty({ message: "First name is required." }),
-      lastName: z.string().nonempty({ message: "Last name is required." }),
-      email: z.string().email({ message: "Invalid email address." }),
-      githubLink: z.string().url({ message: "Invalid GitHub link." }),
-      linkedinLink: z.string().url({ message: "Invalid LinkedIn link." }),
-      technicalSkills: z.array(z.string()).nonempty({
-        message: "Technical skills should be an array of strings.",
-      }),
-      workExperience: z.array(z.string()),
-      aboutMe: z
-        .string()
-        .nonempty({ message: "About me section is required." }),
-      projects: z
-        .array(
-          z.object({
-            title: z
-              .string()
-              .nonempty({ message: "Project title is required." }),
-            githubLink: z
-              .string()
-              .url({ message: "Invalid project GitHub link." }),
-            deployedLink: z.string().url().optional(),
-          })
-        )
-        .nonempty({ message: "At least one project is required." }),
-      education: z
-        .array(
-          z.object({
-            academy: z.string().nonempty({ message: "Academy is required." }),
-            year: z.string().nonempty({ message: "Year is required." }),
-            educational_institution: z
-              .string()
-              .nonempty({ message: "Educational institution is required." }),
-          })
-        )
-        .nonempty({ message: "At least one education record is required." }),
-    });
-
-    const parsedData = dataSchema.safeParse(formData);
+    const parsedData = ResumeDataSchema.safeParse(formData);
     if (!parsedData.success) {
       const errorMessages = {};
 
@@ -115,20 +77,11 @@ function FormResume() {
 
     setErrors({});
 
-    fetch("http://localhost:3000/BuildingResume", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(parsedData.data),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+  
+    const url = "BuildingResume";
+    const data = { key: parsedData.data };
+    Fetch(url, data);
+
   };
 
   return (
@@ -358,7 +311,6 @@ function FormResume() {
             </span>
           )}
         </div>
-
       </form>
       <div
         id="submitBtn"

@@ -1,17 +1,22 @@
+const path = require("path");
 const fs = require("fs");
 const Groq = require("groq-sdk");
-require('dotenv').config()
-const groq = new Groq({apiKey: process.env.GROQ_API_KEY});
+require("dotenv").config();
+var convertapi = require("convertapi")(process.env.CONVERT_API);
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 async function askgroq2(data) {
-  let name = data.firstName;
-  let email = data.email;
-  let github = data.githubLink;
-  let linkedin = data.linkedinLink;
-  let skills = data.technicalSkills;
-  let exp = data.workExperience[0];
-  let about = data.aboutMe;
-  let projects = data.projects;
-  let education = data.education;
+  const name = data.firstName;
+  const email = data.email;
+  const github = data.githubLink;
+  const linkedin = data.linkedinLink;
+  const skills = data.technicalSkills || [];
+  const exp =
+    data.workExperience && data.workExperience.length > 0
+      ? data.workExperience[0]
+      : "No work experience provided";
+  const about = data.aboutMe || "";
+  const projects = data.projects || [];
+  const education = data.education || [];
 
   let prompt = `Please generate a detailed and well-structured professional resume document based on the following information:
 
@@ -55,23 +60,23 @@ async function askgroq2(data) {
 
 Please ensure the resume is formatted in a professional and clean layout, with appropriate section headings, consistent fonts, and clear spacing. The document should be ready for use in a job application for a technical position. Prioritize clarity, conciseness, and relevance in each section.`;
 
-const chatCompletion = await groq.chat.completions.create({
-    "messages": [
-    {
-        "role": "user",
-        "content": prompt,
-    }
+  const chatCompletion = await groq.chat.completions.create({
+    messages: [
+      {
+        role: "user",
+        content: prompt,
+      },
     ],
-    "model": "llama3-70b-8192",
+    model: "llama3-70b-8192",
     //"model": "gemma2-9b-it",
     //"model": "mixtral-8x7b-32768",
     //"model": "llama3-groq-70b-8192-tool-use-preview",
-    "temperature": 1,
-    "max_tokens": 8192,
-    "top_p": 1,
-    "stream": true,
-    "stop": null
-});
+    temperature: 1,
+    max_tokens: 8192,
+    top_p: 1,
+    stream: true,
+    stop: null,
+  });
 
   let response = "";
   for await (const chunk of chatCompletion) {
@@ -80,9 +85,28 @@ const chatCompletion = await groq.chat.completions.create({
 
   console.log(response);
 
-  fs.writeFile("resume.txt", response, function (err) {
-    if (err) throw err;
-    console.log("Saved!");
+  // Ensure the directory exists
+  const pdfDir = path.join(__dirname, "resumepdf");
+  if (!fs.existsSync(pdfDir)) {
+    fs.mkdirSync(pdfDir);
+  }
+  
+  fs.writeFile("resume.txt", response, async function (err) {
+    if (err) {
+      console.error("Error saving resume:", err);
+      return;
+    }
+    console.log("Resume saved!");
+  
+    try {
+      const result = await convertapi.convert("pdf", {
+        File: path.join(__dirname, "resume.txt"),
+      }, "txt");
+      await result.saveFiles(path.join(pdfDir, "resume.pdf"));
+      console.log("PDF converted and saved!");
+    } catch (error) {
+      console.error(error);
+    }
   });
 }
 

@@ -1,4 +1,3 @@
-Here’s the updated setup guide with the added directory change commands:
 
 ---
 
